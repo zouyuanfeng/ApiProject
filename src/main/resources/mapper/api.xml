@@ -1,0 +1,64 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itzyf.dao.ApiDao">
+    <sql id="selectApi">
+        SELECT
+            API.id,
+            API.method,
+            API.response,
+            API.description,
+            API.groupname
+        FROM API
+    </sql>
+    <insert id="addApi" parameterType="com.itzyf.bean.ApiBean">
+        INSERT INTO API (method, response, description, groupname)
+        VALUES (#{method}, #{response}, #{description}, #{groupname})
+    </insert>
+
+    <select id="queryResponseByMethod" parameterType="java.util.Map" resultType="string">
+        SELECT API.response
+        FROM API
+        WHERE API.method = #{method} AND API.groupname = #{groupname}
+    </select>
+
+    <select id="query" resultType="com.itzyf.bean.ApiBean">
+        <include refid="selectApi"/>
+        ORDER BY API.id DESC
+    </select>
+
+    <select id="queryByGroup" resultType="com.itzyf.bean.ApiBean" parameterType="string">
+        <include refid="selectApi"/>
+        <if test="_parameter != null">
+            WHERE API.groupname = '${_parameter}'
+        </if>
+        ORDER BY API.id DESC
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM API
+        WHERE API.id = #{id}
+    </delete>
+
+    <select id="queryById" resultType="com.itzyf.bean.ApiBean">
+        <include refid="selectApi"/>
+        WHERE API.id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE API
+        SET API.description = #{description}, API.response = #{response}, API.method = #{method}
+        WHERE API.id = #{id}
+    </update>
+
+    <select id="queryByKeyword" resultType="com.itzyf.bean.ApiBean" parameterType="string">
+        <include refid="selectApi"/>
+        <if test="_parameter != null">
+            WHERE API.method LIKE CONCAT('%', '${_parameter}', '%')
+        </if>
+
+    </select>
+
+    <select id="queryGroup" resultType="string">
+        SELECT DISTINCT API.groupname
+        FROM API
+    </select>
+</mapper>
