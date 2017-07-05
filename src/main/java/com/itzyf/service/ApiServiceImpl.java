@@ -18,6 +18,7 @@ import java.util.Map;
  */
 @Service("apiService")
 public class ApiServiceImpl implements ApiService {
+
     private final ApiDao apiDao;
 
     @Autowired
@@ -27,15 +28,15 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     public Result addApi(ApiBean bean) {
-        Result result=new Result();
-        if ( apiDao.checkMethod(bean) > 0){
+        Result result = new Result();
+        if (apiDao.checkMethod(bean) > 0) {
             result.setCode(-1);
             result.setMsg("已存在相同记录的方法和分组");
 
-        }else if (apiDao.addApi(bean) <= 0){
+        } else if (apiDao.addApi(bean) <= 0) {
             result.setCode(-1);
             result.setMsg("添加数据失败");
-        }else {
+        } else {
             result.setCode(0);
             result.setMsg("操作成功");
         }

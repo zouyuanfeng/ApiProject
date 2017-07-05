@@ -17,8 +17,15 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,17 +52,20 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <button class="btn btn-default" style="margin:8px " onclick="javascript:location.href ='index'">
+                    <button class="btn btn-default" style="margin:8px "
+                            onclick="javascript:location.href ='index'">
                         重置
                     </button>
                 </li>
                 <li>
-                    <button class="btn btn-default" style="margin:8px " onclick="javascript:location.href ='add'">
+                    <button class="btn btn-default" style="margin:8px "
+                            onclick="javascript:location.href ='add'">
                         新增
                     </button>
                 </li>
                 <li>
-                    <button class="btn btn-default" style="margin:8px " onclick="javascript:location.href ='upload'">
+                    <button class="btn btn-default" style="margin:8px "
+                            onclick="javascript:location.href ='upload'">
                         上传
                     </button>
                 </li>
@@ -84,7 +94,8 @@
         <tbody>
         <c:forEach items="${apis}" var="api" varStatus="status">
             <tr>
-                <td style="width: 6%"><input type="checkbox" value="${api.id}">${ status.index + 1}</td>
+                <td style="width: 6%"><input type="checkbox" value="${api.id}">${ status.index + 1}
+                </td>
                 <td style="width: 7%">${api.groupname}</td>
                 <td style="width: 7%">${api.method}</td>
                 <td style="width: 50%">${api.response}</td>
@@ -93,8 +104,12 @@
                     <button type="button" class="btn btn-primary btn-sm"
                             onclick="toApi('${api.groupname}','${api.method}')">请求
                     </button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="toPage(${api.id})">修改</button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="deleteApi(${api.id})">删除</button>
+                    <button type="button" class="btn btn-primary btn-sm"
+                            onclick="toPage(${api.id})">修改
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm"
+                            onclick="deleteApi(${api.id})">删除
+                    </button>
                 </td>
             </tr>
         </c:forEach>
@@ -105,23 +120,28 @@
         <nav aria-label="Page navigation" style="text-align: center">
             <ul class="pagination">
                 <li <c:if test="${index+1 eq 1}">class="disabled"</c:if>>
-                    <a href="${ctx}/index?index=${index-1}&groupName=${groupName}" aria-label="Previous">
+                    <a href="${ctx}/index?index=${index-1}&groupName=${groupName}"
+                       aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 <c:forEach begin="1" end="${pages}" var="page">
                     <c:if test="${page eq index+1}">
-                        <li class="active"><a href="${ctx}/index?index=${page-1}&groupName=${groupName}">${page}<span
+                        <li class="active"><a
+                                href="${ctx}/index?index=${page-1}&groupName=${groupName}">${page}<span
                                 class="sr-only">(current)</span></a>
                         </li>
                     </c:if>
                     <c:if test="${page ne index+1}">
-                        <li><a href="${ctx}/index?index=${page-1}&groupName=${groupName}">${page}</a></li>
+                        <li>
+                            <a href="${ctx}/index?index=${page-1}&groupName=${groupName}">${page}</a>
+                        </li>
                     </c:if>
 
                 </c:forEach>
                 <li <c:if test="${index+1 eq pages}">class="disabled"</c:if>>
-                    <a href="${ctx}/index?index=${index+1}&groupName=${groupName}" aria-label="Next">
+                    <a href="${ctx}/index?index=${index+1}&groupName=${groupName}"
+                       aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -133,60 +153,60 @@
 
 </body>
 <script>
-    function deleteApi(id) {
-        console.log($(this));
-        var msg = "您真的确定要删除吗？\n\n请确认！";
-        layer.confirm(msg, {
-            btn: ['确定', '取消'] //按钮
-        }, function () {
-            $.get("/delete/" + id, function (result, status) {
-                if (result.code == 0) {
-                    location.reload()
-                } else {
-                    layer.msg(result.msg)
-                }
-            });
-        });
-    }
-
-    function toPage(id) {
-        location.href = "/update/" + id;
-    }
-
-    function toApi(group, method) {
-        location.href = "/api/" + group + "/" + method;
-    }
-
-    //    function getUrlParam(name) {
-    //        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-    //        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-    //        if (r != null) return unescape(r[2]);
-    //        return null; //返回参数值
-    //    }
-
-    function onClickHander(obj) {
-        if (obj.checked) {
-            $("td>:checkbox").prop("checked", 'true');
+  function deleteApi(id) {
+    console.log($(this));
+    var msg = "您真的确定要删除吗？\n\n请确认！";
+    layer.confirm(msg, {
+      btn: ['确定', '取消'] //按钮
+    }, function () {
+      $.get("/delete/" + id, function (result, status) {
+        if (result.code == 0) {
+          location.reload()
         } else {
-            $("td>:checkbox").removeAttr("checked");
+          layer.msg(result.msg)
         }
-    }
+      });
+    });
+  }
 
-    function deleteCheck() {
-        var ids = [];
-        $("td>:checkbox").each(function (index, obj) {
-            if (obj.checked) {
-                ids.push(obj.value);
-            }
-        });
-        console.log(ids);
-        if (ids.length == 0) {
-            layer.msg("未选中");
-            return;
-        }
-        layer.confirm('是否确认删除选中', {
-            btn: ['确定', '取消'] //按钮
-        }, function () {
+  function toPage(id) {
+    location.href = "/update/" + id;
+  }
+
+  function toApi(group, method) {
+    location.href = "/api/" + group + "/" + method;
+  }
+
+  //    function getUrlParam(name) {
+  //        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+  //        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+  //        if (r != null) return unescape(r[2]);
+  //        return null; //返回参数值
+  //    }
+
+  function onClickHander(obj) {
+    if (obj.checked) {
+      $("td>:checkbox").prop("checked", 'true');
+    } else {
+      $("td>:checkbox").removeAttr("checked");
+    }
+  }
+
+  function deleteCheck() {
+    var ids = [];
+    $("td>:checkbox").each(function (index, obj) {
+      if (obj.checked) {
+        ids.push(obj.value);
+      }
+    });
+    console.log(ids);
+    if (ids.length == 0) {
+      layer.msg("未选中");
+      return;
+    }
+    layer.confirm('是否确认删除选中', {
+      btn: ['确定', '取消'] //按钮
+    }, function () {
 //            $.post("/deleteMuti", JSON.stringify(ids), function (result, status) {
 //                if (result.code == 0) {
 //                    location.reload()
@@ -195,26 +215,26 @@
 //                }
 //            });
 
-            $.ajax({
-                type: "POST",
-                url: "/deleteMuti",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(ids),
-                success: function (data) {
-                    if (data.code == 0) {
-                        layer.msg("删除成功");
-                        setTimeout(function () {
-                            location.reload()
-                        }, 500)
-                    }
-                },
-                error: function (e) {
-                    alert("出错：" + e);
-                }
-            });
+      $.ajax({
+        type: "POST",
+        url: "/deleteMuti",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(ids),
+        success: function (data) {
+          if (data.code == 0) {
+            layer.msg("删除成功");
+            setTimeout(function () {
+              location.reload()
+            }, 500)
+          }
+        },
+        error: function (e) {
+          alert("出错：" + e);
+        }
+      });
 
-        });
-    }
+    });
+  }
 
 </script>
 </html>
