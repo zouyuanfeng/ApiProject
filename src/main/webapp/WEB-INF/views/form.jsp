@@ -67,7 +67,7 @@
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify($('form').serializeJSON()),
                 success: function (data) {
-                    layer.msg(data.msg)
+                    layer.msg(data.msg);
                     if (data.code == 0) {
                         setTimeout(function () {
                             location.href = "/index"

@@ -13,7 +13,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -64,7 +66,7 @@ public class IndexController {
         Result result = new Result();
         boolean flag;
         if (apiBean.getId() <= 0) { //新增
-            flag = apiService.addApi(apiBean);
+            return apiService.addApi(apiBean);
         } else { //修改
             flag = apiService.updateById(apiBean);
         }
@@ -206,5 +208,16 @@ public class IndexController {
     @RequestMapping("upload")
     public String uploadPage() {
         return "upload";
+    }
+
+    @ResponseBody
+    @RequestMapping("deleteMuti")
+    public Result deleteMuti(@RequestBody List<Integer> ids) {
+        for (Integer id : ids) {
+            LOGGER.info("id:" + id);
+        }
+        int[] ints = ids.stream().mapToInt(value -> value).toArray();
+        apiService.batchDeleteApis(ints);
+        return createResult(null);
     }
 }

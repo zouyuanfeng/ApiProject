@@ -20,6 +20,7 @@
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
+
 <body>
 <h1 style="text-align: center">接口列表</h1>
 <div style="width: 80%;margin: 0 auto">
@@ -37,6 +38,9 @@
                         <li><a href="${ctx}/index?groupName=${name}">${name}</a></li>
                     </c:forEach>
                 </ul>
+                <button class="btn btn-default" style="margin-left: 8px;" onclick="deleteCheck()">
+                    删除选中
+                </button>
             </div>
 
             <ul class="nav navbar-nav navbar-right">
@@ -68,7 +72,7 @@
     <table align="center" class="table table-hover">
         <thead>
         <tr>
-            <th>ID</th>
+            <th><input type="checkbox" onclick="onClickHander(this)">序号</th>
             <th>组名</th>
             <th>方法名</th>
             <th>返回值</th>
@@ -78,9 +82,9 @@
         </thead>
 
         <tbody>
-        <c:forEach items="${apis}" var="api">
+        <c:forEach items="${apis}" var="api" varStatus="status">
             <tr>
-                <td style="width: 6%">${api.id}</td>
+                <td style="width: 6%"><input type="checkbox" value="${api.id}">${ status.index + 1}</td>
                 <td style="width: 7%">${api.groupname}</td>
                 <td style="width: 7%">${api.method}</td>
                 <td style="width: 50%">${api.response}</td>
@@ -153,12 +157,64 @@
         location.href = "/api/" + group + "/" + method;
     }
 
-//    function getUrlParam(name) {
-//        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-//        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-//        if (r != null) return unescape(r[2]);
-//        return null; //返回参数值
-//    }
+    //    function getUrlParam(name) {
+    //        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    //        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    //        if (r != null) return unescape(r[2]);
+    //        return null; //返回参数值
+    //    }
+
+    function onClickHander(obj) {
+        if (obj.checked) {
+            $("td>:checkbox").prop("checked", 'true');
+        } else {
+            $("td>:checkbox").removeAttr("checked");
+        }
+    }
+
+    function deleteCheck() {
+        var ids = [];
+        $("td>:checkbox").each(function (index, obj) {
+            if (obj.checked) {
+                ids.push(obj.value);
+            }
+        });
+        console.log(ids);
+        if (ids.length == 0) {
+            layer.msg("未选中");
+            return;
+        }
+        layer.confirm('是否确认删除选中', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+//            $.post("/deleteMuti", JSON.stringify(ids), function (result, status) {
+//                if (result.code == 0) {
+//                    location.reload()
+//                } else {
+//                    layer.msg(result.msg)
+//                }
+//            });
+
+            $.ajax({
+                type: "POST",
+                url: "/deleteMuti",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(ids),
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.msg("删除成功");
+                        setTimeout(function () {
+                            location.reload()
+                        }, 500)
+                    }
+                },
+                error: function (e) {
+                    alert("出错：" + e);
+                }
+            });
+
+        });
+    }
 
 </script>
 </html>

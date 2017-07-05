@@ -3,6 +3,7 @@ package com.itzyf.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.itzyf.bean.ApiBean;
+import com.itzyf.bean.Result;
 import com.itzyf.dao.ApiDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,21 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public boolean addApi(ApiBean bean) {
-        return apiDao.addApi(bean) > 0;
+    public Result addApi(ApiBean bean) {
+        Result result=new Result();
+        if ( apiDao.checkMethod(bean) > 0){
+            result.setCode(-1);
+            result.setMsg("已存在相同记录的方法和分组");
+
+        }else if (apiDao.addApi(bean) <= 0){
+            result.setCode(-1);
+            result.setMsg("添加数据失败");
+        }else {
+            result.setCode(0);
+            result.setMsg("操作成功");
+        }
+        return result;
+//        return apiDao.checkMethod(bean) <= 0 && apiDao.addApi(bean) > 0;
     }
 
     @Override
@@ -73,4 +87,11 @@ public class ApiServiceImpl implements ApiService {
     public List<String> queryGroup() {
         return apiDao.queryGroup();
     }
+
+    @Override
+    public void batchDeleteApis(int[] ids) {
+        apiDao.batchDeleteApis(ids);
+    }
+
+
 }

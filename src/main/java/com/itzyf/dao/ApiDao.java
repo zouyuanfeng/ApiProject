@@ -30,4 +30,8 @@ public interface ApiDao {
     List<ApiBean> queryByKeyword(String keyword);
 
     List<String> queryGroup();
+
+    int checkMethod(ApiBean bean);
+
+    void batchDeleteApis(int[] ids);
 }

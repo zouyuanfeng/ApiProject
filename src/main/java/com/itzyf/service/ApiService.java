@@ -2,6 +2,7 @@ package com.itzyf.service;
 
 import com.github.pagehelper.Page;
 import com.itzyf.bean.ApiBean;
+import com.itzyf.bean.Result;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public interface ApiService {
 
-    boolean addApi(ApiBean bean);
+    Result addApi(ApiBean bean);
 
     String queryResponseByMethod( String groupName,String method);
 
@@ -34,4 +35,6 @@ public interface ApiService {
     List<ApiBean> queryAllToPage(String keyword);
 
     List<String> queryGroup();
+
+    public void batchDeleteApis(int[] ids);
 }

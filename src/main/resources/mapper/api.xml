@@ -61,4 +61,17 @@
         SELECT DISTINCT API.groupname
         FROM API
     </select>
+
+    <select id="checkMethod" resultType="int" parameterType="com.itzyf.bean.ApiBean">
+        SELECT count(API.id)
+        FROM API
+        WHERE API.groupname = #{groupname} AND API.method = #{method}
+    </select>
+
+    <delete id="batchDeleteApis" parameterType="int">
+        delete from API where API.id in
+        <foreach item="apiItem" collection="array" open="(" separator="," close=")">
+            #{apiItem}
+        </foreach>
+    </delete>
 </mapper>
