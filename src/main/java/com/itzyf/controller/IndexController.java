@@ -5,18 +5,29 @@ import com.itzyf.bean.ApiBean;
 import com.itzyf.bean.Result;
 import com.itzyf.service.ApiService;
 import com.itzyf.utils.GlobalConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author 依风听雨
@@ -24,8 +35,9 @@ import java.util.logging.Logger;
  */
 @Controller
 public class IndexController {
-    static Logger LOGGER = Logger.getLogger(IndexController.class.getSimpleName());
-    final ApiService apiService;
+
+    private static Logger LOGGER = LoggerFactory.getLogger(IndexController.class.getSimpleName());
+    private final ApiService apiService;
 
     @Autowired
     public IndexController(ApiService apiService) {
@@ -33,7 +45,8 @@ public class IndexController {
     }
 
     @RequestMapping({"/", "", "index"})
-    public ModelAndView index(@RequestParam(defaultValue = "0") int index, @RequestParam(defaultValue = "ALL") String groupName) {
+    public ModelAndView index(@RequestParam(defaultValue = "0") int index,
+            @RequestParam(defaultValue = "ALL") String groupName) {
         ModelAndView mav = new ModelAndView("index");
         Page<ApiBean> apiBeans = groupName.equals("ALL") ? apiService.queryAllToPage(index + 1) :
                 apiService.queryAllByGroupToPage(index + 1, groupName);
@@ -80,19 +93,6 @@ public class IndexController {
         return result;
     }
 
-//    @ResponseBody
-//    @PutMapping("add")
-//    public Result addApi(@RequestBody ApiBean bean) {
-//        boolean b = apiService.addApi(bean);
-//        if (b)
-//            return createResult(null);
-//        else {
-//            Result result = new Result();
-//            result.setCode(101);
-//            result.setMsg("添加失败");
-//            return result;
-//        }
-//    }
 
     @RequestMapping("search")
     public ModelAndView search(@RequestParam String keyword) {
@@ -106,7 +106,8 @@ public class IndexController {
 
     @ResponseBody
     @RequestMapping("api/{groupName}/{api}")
-    public String getApi(@PathVariable("api") String api, @PathVariable("groupName") String groupName) {
+    public String getApi(@PathVariable("api") String api,
+            @PathVariable("groupName") String groupName) {
         return apiService.queryResponseByMethod(groupName, api);
     }
 
@@ -114,8 +115,9 @@ public class IndexController {
         Result<T> result = new Result<>();
         result.setMsg("成功");
         result.setCode(0);
-        if (t != null)
+        if (t != null) {
             result.setResult(t);
+        }
         return result;
     }
 
@@ -124,9 +126,9 @@ public class IndexController {
     public Result delete(@PathVariable("id") int id) {
         LOGGER.info("删除ID:" + id);
         boolean b = apiService.deleteById(id);
-        if (b)
+        if (b) {
             return createResult(null);
-        else {
+        } else {
             Result result = new Result();
             result.setCode(102);
             result.setMsg("操作失败");
@@ -160,8 +162,8 @@ public class IndexController {
             uploadPath.mkdirs();
         }
 
-
-        String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String suffix = file.getOriginalFilename()
+                .substring(file.getOriginalFilename().lastIndexOf("."));
         try {
             String path = saveBit(file.getInputStream(), home, suffix);
             result.setMsg("上传成功");
@@ -178,7 +180,8 @@ public class IndexController {
     private String saveBit(InputStream inStream, String path, String suffix) throws IOException {
 //        String guid = Guid.getRandomGUID();
 
-        String name = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + "" + (new Random().nextInt(89) + 10);
+        String name = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + "" + (
+                new Random().nextInt(89) + 10);
 
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         //创建一个Buffer字符串

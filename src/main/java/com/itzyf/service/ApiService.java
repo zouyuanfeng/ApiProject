@@ -14,11 +14,11 @@ public interface ApiService {
 
     Result addApi(ApiBean bean);
 
-    String queryResponseByMethod( String groupName,String method);
+    String queryResponseByMethod(String groupName, String method);
 
     Page<ApiBean> queryAllToPage(int index);
 
-    Page<ApiBean> queryAllByGroupToPage(int index,String groupName);
+    Page<ApiBean> queryAllByGroupToPage(int index, String groupName);
 
     boolean deleteById(int id);
 
@@ -28,13 +28,10 @@ public interface ApiService {
 
     /**
      * 根据关键字查找
-     *
-     * @param keyword
-     * @return
      */
     List<ApiBean> queryAllToPage(String keyword);
 
     List<String> queryGroup();
 
-    public void batchDeleteApis(int[] ids);
+    void batchDeleteApis(int[] ids);
 }

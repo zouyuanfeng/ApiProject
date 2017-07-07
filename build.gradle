@@ -55,7 +55,7 @@ dependencies {
     compile group: 'com.alibaba', name: 'druid', version: '1.0.17'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.38'
 
-    compile group: 'log4j', name: 'log4j', version:'1.2.13'
+    compile 'log4j:log4j:1.2.17'
     compile "org.slf4j:slf4j-log4j12:1.7.24"
     compile "org.slf4j:slf4j-api:1.7.24"
 
@@ -69,9 +69,9 @@ dependencies {
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.2'
 
 //    compile 'com.qiniu:qiniu-java-sdk:7.2.6'
-    compile 'com.squareup.okhttp3:okhttp:3.8.0'
+//    compile 'com.squareup.okhttp3:okhttp:3.8.0'
 //    compile 'com.zhy:okhttputils:2.6.2'
-    compile 'com.google.code.gson:gson:2.8.0'
+//    compile 'com.google.code.gson:gson:2.8.0'
 //    compile 'com.qiniu:happy-dns-java:0.1.4'
 //    compile 'redis.clients:jedis:2.9.0'
 //    compile 'org.springframework.data:spring-data-redis:1.8.4.RELEASE'
