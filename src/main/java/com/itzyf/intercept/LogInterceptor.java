@@ -20,6 +20,7 @@ public class LogInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler) throws Exception {
         LOGGER.info("请求来源：" + getIpAddr(request));
+        LOGGER.info("请求链接：" + request.getRequestURL());
         return true;
     }
 
@@ -31,7 +32,7 @@ public class LogInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler,
             ModelAndView modelAndView) throws Exception {
-//        LOGGER.info("请求来源：" + getIpAddr(request));
+//        LOGGER.info("请求来源：" + response.getStatus());
     }
 
     @Override
@@ -41,7 +42,9 @@ public class LogInterceptor implements HandlerInterceptor {
         LOGGER.info("请求完成");
     }
 
-
+    /**
+     * 获取IP地址
+     */
     private String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
