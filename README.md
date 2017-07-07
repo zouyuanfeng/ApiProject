@@ -3,6 +3,12 @@
 * mysql数据库
 * nginx映射上传的图片目录
 
+#### mysql
+```
+  #安装mysql
+  $sudo apt install mysql-server
+```
+
 #### sql
 ```sql
 CREATE TABLE API (
@@ -14,10 +20,20 @@ CREATE TABLE API (
 );
 ```
 
+#### tomcat
+```
+  #下载
+  $sudo wget http://mirrors.hust.edu.cn/apache/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15.tar.gz
+  #解压
+  $sudo tar zxf apache-tomcat-8.5.15.tar.gz
+  #启动,默认是8080端口
+  $./apache-tomcat-8.5.15/bin/startup.sh
+```
+
 #### nginx配置
 安装
 ```
-sudo apt-get install nginx
+  $sudo apt-get install nginx
 ```
 
 /etc/nginx/nginx.conf
