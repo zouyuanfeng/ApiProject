@@ -1,15 +1,13 @@
 package com.itzyf.service;
 
-import com.google.gson.Gson;
 import com.itzyf.bean.wx.AccessTokenBean;
 import com.itzyf.bean.wx.UserInfoBean;
 import com.itzyf.intercept.HttpLoggingInterceptor;
 import com.itzyf.utils.GlobalConfig;
+import com.itzyf.utils.HttpUtils;
 import java.io.IOException;
 import java.net.URLEncoder;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,16 +50,8 @@ public class WxService {
     public AccessTokenBean getAccessToken(String code) {
         String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid
                 + "&secret=" + appSecret + "&code=" + code + "&grant_type=authorization_code ";
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        Response response;
         try {
-            response = client.newCall(request).execute();
-            if (response.code() == 200) {
-                return new Gson().fromJson(response.body().charStream(), AccessTokenBean.class);
-            }
+            return HttpUtils.request(url, AccessTokenBean.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,16 +65,8 @@ public class WxService {
         String url =
                 "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid="
                         + openId + "&lang=zh_CN";
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        Response response;
         try {
-            response = client.newCall(request).execute();
-            if (response.code() == 200) {
-                return new Gson().fromJson(response.body().charStream(), UserInfoBean.class);
-            }
+            return HttpUtils.request(url, UserInfoBean.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

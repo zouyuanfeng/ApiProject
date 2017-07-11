@@ -68,7 +68,7 @@ server {
         }
         
         location / {
-            proxy_pass http://192.168.11.105:8080/;
+            proxy_pass http://192.168.11.115:8080/;
         }
 }
 ```
