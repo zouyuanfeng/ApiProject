@@ -16,7 +16,8 @@ public class GlobalConfig implements Observer {
     private static Logger LOGGER = LoggerFactory.getLogger(GlobalConfig.class);
 
     private static GlobalConfig instance = null;
-
+    private String appid;
+    private String appSecret;
     private Properties p = new Properties();
 
     /*
@@ -32,8 +33,7 @@ public class GlobalConfig implements Observer {
     }
 
 
-    private GlobalConfig()
-    {
+    private GlobalConfig() {
         load();
     }
 
@@ -47,7 +47,7 @@ public class GlobalConfig implements Observer {
     private void load() {
         InputStream in = null;
         try {
-            in=getClass().getClassLoader().getResourceAsStream("global-config.properties");
+            in = getClass().getClassLoader().getResourceAsStream("global-config.properties");
             p.load(in);
         } catch (Exception e) {
             LOGGER.error("Load actionclass.properties Error!", e);
@@ -60,9 +60,17 @@ public class GlobalConfig implements Observer {
                 }
             }
         }
+        appid = getConfigValue("wx_appId");
+        appSecret = getConfigValue("wx_appSecret");
     }
 
     public String getConfigValue(String configName) {
         return p.getProperty(configName);
+    }
+
+
+    public String getConfigWxUrlValue(String configName) {
+        return p.getProperty(configName).replace("${wx_appId}", appid)
+                .replace("${wx_appSecret}", appSecret);
     }
 }

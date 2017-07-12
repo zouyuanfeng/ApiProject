@@ -2,12 +2,10 @@ package com.itzyf.service;
 
 import com.itzyf.bean.wx.AccessTokenBean;
 import com.itzyf.bean.wx.UserInfoBean;
-import com.itzyf.intercept.HttpLoggingInterceptor;
 import com.itzyf.utils.GlobalConfig;
 import com.itzyf.utils.HttpUtils;
 import java.io.IOException;
 import java.net.URLEncoder;
-import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,12 +14,6 @@ import org.springframework.stereotype.Service;
  */
 @Service("wxService")
 public class WxService {
-
-    private final String appid = GlobalConfig.getConfig().getConfigValue("wx_appId");
-    private final String appSecret = GlobalConfig.getConfig().getConfigValue("wx_appSecret");
-    private OkHttpClient client = new OkHttpClient.Builder()
-            .addInterceptor(new HttpLoggingInterceptor())
-            .build();
 
     /**
      * 微信授权，获取CODE
@@ -33,10 +25,8 @@ public class WxService {
     public String authorize(String redirect_uri) {
 
         try {
-            return
-                    "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + appid
-                            + "&redirect_uri=" + URLEncoder.encode(redirect_uri, "UTF-8")
-                            + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect ";
+            return GlobalConfig.getConfig().getConfigWxUrlValue("wx_auth_url")
+                    .replace("${redirect_uri}", URLEncoder.encode(redirect_uri, "UTF-8"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,8 +38,8 @@ public class WxService {
      * 请求获取accessToken
      */
     public AccessTokenBean getAccessToken(String code) {
-        String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid
-                + "&secret=" + appSecret + "&code=" + code + "&grant_type=authorization_code ";
+        String url = GlobalConfig.getConfig().getConfigWxUrlValue("wx_access_token")
+                .replace("${code}", code);
         try {
             return HttpUtils.request(url, AccessTokenBean.class);
         } catch (IOException e) {
@@ -62,9 +52,8 @@ public class WxService {
      * 获取用户信息
      */
     public UserInfoBean getUserInfo(String accessToken, String openId) {
-        String url =
-                "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid="
-                        + openId + "&lang=zh_CN";
+        String url = GlobalConfig.getConfig().getConfigWxUrlValue("wx_userinfo")
+                .replace("${accessToken}", accessToken).replace("${openid}", openId);
         try {
             return HttpUtils.request(url, UserInfoBean.class);
         } catch (IOException e) {
