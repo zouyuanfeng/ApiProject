@@ -2,6 +2,8 @@ package com.itzyf.controller;
 
 import com.github.pagehelper.Page;
 import com.itzyf.bean.ApiBean;
+import com.itzyf.bean.DataList;
+import com.itzyf.bean.PageBean;
 import com.itzyf.bean.Result;
 import com.itzyf.service.ApiService;
 import com.itzyf.utils.GlobalConfig;
@@ -11,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -98,7 +101,7 @@ public class IndexController {
     public ModelAndView search(@RequestParam String keyword) {
         ModelAndView mav = new ModelAndView("index");
         List<ApiBean> apiBeans = apiService.queryAllToPage(keyword);
-        mav.addObject("search",true);
+        mav.addObject("search", true);
         mav.addObject("apis", apiBeans);
         mav.addObject("index", 0);
         mav.addObject("pages", 1);
@@ -110,6 +113,43 @@ public class IndexController {
     public String getApi(@PathVariable("api") String api,
             @PathVariable("groupName") String groupName) {
         return apiService.queryResponseByMethod(groupName, api);
+    }
+
+    @RequestMapping("list")
+    public String listPage(){
+        return "list";
+    }
+
+    @ResponseBody
+    @RequestMapping("getList")
+    public Result<PageBean> getList(@RequestParam(defaultValue = "0") int currentPage,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "5") int total) {
+        PageBean bean = new PageBean();
+        bean.setCurrentPage(currentPage);
+        bean.setPageSize(pageSize);
+        bean.setTotal(total);
+        List<DataList> list = new ArrayList<>();
+        int index = currentPage * pageSize; //从这开始计数  currentPage从0开始
+        if (index > total) {
+            bean.setDataList(list);
+            bean.setHasNext(false);
+            return createResult(bean);
+        }
+
+        for (int i = index; i < total; i++) {
+            DataList data=new DataList();
+            data.setName("测试数据-->" + i);
+            data.setDesc("这是测试数据的描述。。。嗯，就这样吧");
+            list.add(data);
+        }
+        bean.setDataList(list);
+        if (index + pageSize < total) {
+            bean.setHasNext(true);
+        } else {
+            bean.setHasNext(false);
+        }
+        return createResult(bean);
     }
 
     private <T> Result<T> createResult(T t) {

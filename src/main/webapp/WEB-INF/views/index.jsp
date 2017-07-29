@@ -68,6 +68,12 @@
                 </li>
                 <li>
                     <button class="btn btn-default" style="margin:8px "
+                            onclick="javascript:location.href ='list'">
+                        列表
+                    </button>
+                </li>
+                <li>
+                    <button class="btn btn-default" style="margin:8px "
                             onclick="javascript:location.href ='upload'">
                         上传
                     </button>
