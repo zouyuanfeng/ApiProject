@@ -116,7 +116,7 @@ public class IndexController {
     }
 
     @RequestMapping("list")
-    public String listPage(){
+    public String listPage() {
         return "list";
     }
 
@@ -138,8 +138,8 @@ public class IndexController {
         }
 
         for (int i = index; i < total; i++) {
-            DataList data=new DataList();
-            data.setName("测试数据-->" + i);
+            DataList data = new DataList();
+            data.setName("测试数据-->" + (i + 1));
             data.setDesc("这是测试数据的描述。。。嗯，就这样吧");
             list.add(data);
         }
