@@ -98,6 +98,7 @@ public class IndexController {
     public ModelAndView search(@RequestParam String keyword) {
         ModelAndView mav = new ModelAndView("index");
         List<ApiBean> apiBeans = apiService.queryAllToPage(keyword);
+        mav.addObject("search",true);
         mav.addObject("apis", apiBeans);
         mav.addObject("index", 0);
         mav.addObject("pages", 1);

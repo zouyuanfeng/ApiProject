@@ -74,4 +74,31 @@ public class WxController {
     public void interfaceWx() {
 
     }
+
+//    @RequestMapping("redPackage")
+//    public ModelAndView redPackage() {
+//        ModelAndView mav = new ModelAndView("wx/redPackage");
+//        mav.addObject("moneys", getRedPackage(10, 100));
+//        return mav;
+//    }
+
+//    /**
+//     * 微信红包
+//     */
+//    @ResponseBody
+//    @RequestMapping("getRedPackage")
+//    public List<Double> getRedPackage(@RequestParam int remainSize,
+//            @RequestParam double remainMoney) {
+//        if (remainMoney < 0 || remainMoney < 0) {
+//            return new ArrayList<>();
+//        }
+//        LeftMoneyPackage redPackage = new LeftMoneyPackage();
+//        redPackage.remainMoney = remainMoney;
+//        redPackage.remainSize = remainSize;
+//        List<Double> money = new ArrayList<>();
+//        while (redPackage.remainSize > 0) {
+//            money.add(wxService.getRandomMoney(redPackage));
+//        }
+//        return money;
+//    }
 }

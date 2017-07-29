@@ -34,22 +34,25 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Single button -->
-            <div class="btn-group" style="margin:8px ">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    ${groupName} <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="${ctx}/index">All</a></li>
-                    <c:forEach items="${groupNames}" var="name">
-                        <li><a href="${ctx}/index?groupName=${name}">${name}</a></li>
-                    </c:forEach>
-                </ul>
-                <button class="btn btn-default" style="margin-left: 8px;" onclick="deleteCheck()">
-                    删除选中
-                </button>
-            </div>
-
+            <c:if test="${search ne true}">
+                <div class="btn-group" style="margin:8px ">
+                    <button type="button" class="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            ${groupName} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="${ctx}/index">All</a></li>
+                        <c:forEach items="${groupNames}" var="name">
+                            <li><a href="${ctx}/index?groupName=${name}">${name}</a></li>
+                        </c:forEach>
+                    </ul>
+                    <button class="btn btn-default" style="margin-left: 8px;"
+                            onclick="deleteCheck()">
+                        删除选中
+                    </button>
+                </div>
+            </c:if>
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <button class="btn btn-default" style="margin:8px "
@@ -94,10 +97,10 @@
         <tbody>
         <c:forEach items="${apis}" var="api" varStatus="status">
             <tr>
-                <td style="width: 6%"><input type="checkbox" value="${api.id}">${ status.index + 1}
+                <td><input type="checkbox" value="${api.id}">${ status.index + 1}
                 </td>
-                <td style="width: 7%">${api.groupname}</td>
-                <td style="width: 7%">${api.method}</td>
+                <td>${api.groupname}</td>
+                <td style="width: 10%">${api.method}</td>
                 <td style="width: 50%">${api.response}</td>
                 <td style="width: 10%">${api.description}</td>
                 <td>
