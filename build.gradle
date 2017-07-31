@@ -75,4 +75,5 @@ dependencies {
 //    compile 'org.apache.directory.studio:org.dom4j.dom4j:1.6.1'
 //    compile 'com.thoughtworks.xstream:xstream:1.4.9'
     compile "org.projectlombok:lombok:1.16.16"
+    compile 'org.hibernate:hibernate-validator:5.2.5.Final'
 }

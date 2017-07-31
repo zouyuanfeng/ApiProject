@@ -7,6 +7,8 @@ import com.itzyf.bean.PageBean;
 import com.itzyf.bean.Result;
 import com.itzyf.service.ApiService;
 import com.itzyf.utils.GlobalConfig;
+import com.itzyf.validator.ValidationException;
+import com.itzyf.validator.ValidatorImpl;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,11 +78,21 @@ public class IndexController {
         }
         return mav;
     }
+    @Resource
+    private ValidatorImpl validator;
 
     @ResponseBody
     @PostMapping("operation")
     public Result operationPost(@RequestBody ApiBean apiBean) {
         Result result = new Result();
+        try {
+            validator.validate(apiBean);
+        } catch (ValidationException e) {
+            e.printStackTrace();
+            result.setCode(9999);
+            result.setMsg(e.getMessage());
+            return result;
+        }
         boolean flag;
         if (apiBean.getId() <= 0) { //新增
             return apiService.addApi(apiBean);

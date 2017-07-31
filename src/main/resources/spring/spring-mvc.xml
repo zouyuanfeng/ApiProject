@@ -21,6 +21,11 @@
       expression="org.springframework.stereotype.Repository"/>
   </context:component-scan>
 
+  <bean id="localValidatorFactoryBean" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+    <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+  </bean>
+  <bean id="validator"
+    class="com.itzyf.validator.ValidatorImpl"/>
 
   <mvc:annotation-driven>
     <mvc:message-converters register-defaults="true">
@@ -57,6 +62,7 @@
     <property name="maxUploadSize" value="5242880"/>
     <!--<property name="uploadTempDir" value="fileUpload/temp"/>-->
   </bean>
+
 
   <mvc:interceptors>
     <mvc:interceptor>
