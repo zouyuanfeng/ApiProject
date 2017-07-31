@@ -56,11 +56,11 @@
     $(document).ready(function () {
         $("#button_submit").click(function () {
 
-            var reg = /[^u4e00-u9fa5]/;
-            if (reg.test($("#method").val())) {
-                alert("禁止输入中文");
-                return;
-            }
+//            var reg = /[^u4e00-u9fa5]/;
+//            if (reg.test($("#method").val())) {
+//                alert("禁止输入中文");
+//                return;
+//            }
             $.ajax({
                 type: "POST",
                 url: "/operation",
