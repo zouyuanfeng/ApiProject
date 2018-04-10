@@ -1,39 +1,39 @@
 package com.itzyf.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.github.pagehelper.Page;
-import com.itzyf.bean.ApiBean;
-import com.itzyf.bean.DataList;
-import com.itzyf.bean.PageBean;
-import com.itzyf.bean.Result;
+import com.itzyf.bean.*;
+import com.itzyf.color.Color;
+import com.itzyf.color.ColorUtils;
+import com.itzyf.color.SelectorBean;
 import com.itzyf.service.ApiService;
 import com.itzyf.utils.GlobalConfig;
+import com.itzyf.utils.VerifyCodeUtils;
 import com.itzyf.validator.ValidationException;
 import com.itzyf.validator.ValidatorImpl;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import sun.tools.jar.CommandLine;
 
 /**
  * @author 依风听雨
@@ -52,7 +52,7 @@ public class IndexController {
 
     @RequestMapping({"/", "", "index"})
     public ModelAndView index(@RequestParam(defaultValue = "0") int index,
-            @RequestParam(defaultValue = "ALL") String groupName) {
+                              @RequestParam(defaultValue = "ALL") String groupName) {
         ModelAndView mav = new ModelAndView("index");
         Page<ApiBean> apiBeans = groupName.equals("ALL") ? apiService.queryAllToPage(index + 1) :
                 apiService.queryAllByGroupToPage(index + 1, groupName);
@@ -78,6 +78,7 @@ public class IndexController {
         }
         return mav;
     }
+
     @Resource
     private ValidatorImpl validator;
 
@@ -124,7 +125,7 @@ public class IndexController {
     @ResponseBody
     @RequestMapping("api/{groupName}/{api}")
     public String getApi(@PathVariable("api") String api,
-            @PathVariable("groupName") String groupName) {
+                         @PathVariable("groupName") String groupName) {
         return apiService.queryResponseByMethod(groupName, api);
     }
 
@@ -136,8 +137,8 @@ public class IndexController {
     @ResponseBody
     @RequestMapping("getList")
     public Result<PageBean> getList(@RequestParam(defaultValue = "0") int currentPage,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(defaultValue = "5") int total) {
+                                    @RequestParam(defaultValue = "10") int pageSize,
+                                    @RequestParam(defaultValue = "5") int total) {
         PageBean bean = new PageBean();
         bean.setCurrentPage(currentPage);
         bean.setPageSize(pageSize);
@@ -276,5 +277,73 @@ public class IndexController {
         int[] ints = ids.stream().mapToInt(value -> value).toArray();
         apiService.batchDeleteApis(ints);
         return createResult(null);
+    }
+
+    @RequestMapping(value = "/generateCheckCode", method = RequestMethod.GET)
+    public void generateCheckCode(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setContentType("image/jpeg");
+        //生成随机字串
+        String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
+//        if (BizConstants.isOpenCache()) {
+//            String verifyCodeKey = RedisKeyUtils.genCouponVerifyCode(getLoginUser().getUserId());
+//            RedisUtil.set(verifyCodeKey, verifyCode,90);//90秒 1分半钟
+//
+//        }else{
+//            //存入会话session
+//            HttpSession session = request.getSession(true);
+//            //删除以前的
+//            session.removeAttribute("verCode");
+//            session.setAttribute("verCode", verifyCode.toLowerCase());
+//        }
+        //生成图片
+        int w = 70, h = 30;
+        try {
+            VerifyCodeUtils.outputImage(w, h, response.getOutputStream(), verifyCode);
+        } catch (IOException e) {
+            e.printStackTrace();
+//            logger.error("生成激活优惠券验证码失败",e);
+        }
+
+    }
+
+
+    @RequestMapping("button")
+    public String buttonColorGenerate() {
+        return "button";
+    }
+
+    @RequestMapping("getColor")
+    @ResponseBody
+    public Result getColor(@RequestBody ColorBean req) {
+        Result<Map<String, String>> result = new Result<>();
+        if (StringUtils.isEmpty(req.getColor())) {
+            result.setCode(110);
+            result.setMsg("请输入颜色值！");
+            return result;
+        }
+        String reg = "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$";
+        Pattern p = Pattern.compile(reg);
+        Matcher m = p.matcher(req.getColor());
+        if (!m.matches()) {
+            result.setCode(111);
+            result.setMsg("颜色值输入异常");
+            return result;
+        }
+
+        Map<String, String> map = new HashMap<>();
+        int color = Color.parseColor(req.getColor());
+        ColorUtils colorUtils = new ColorUtils(color);
+        //默认状态填充颜色
+        map.put("default", "默认状态填充颜色：#" + Integer.toHexString(color));
+        map.put("defaultEdge", "默认状态边缘颜色：#" + Integer.toHexString(colorUtils.defaultEdge()));
+        map.put("activeFill", "按下状态填充颜色：#" + Integer.toHexString(colorUtils.activeFill()));
+        map.put("activeEdge", "按下状态边缘颜色：#" + Integer.toHexString(colorUtils.activeEdge()));
+        map.put("disabledFill", "禁止状态填充颜色：#" + Integer.toHexString(colorUtils.disabledFill()));
+        map.put("disabledEdge", "禁止状态边缘颜色：#" + Integer.toHexString(colorUtils.disabledEdge()));
+        result.setResult(map);
+        return result;
     }
 }
