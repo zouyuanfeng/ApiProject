@@ -46,7 +46,7 @@
         data['color'] = '#' + $("#color").val();
         $.ajax({
             type: "POST",
-            url: "/getColor",
+            url: "getColor",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(data),
             success: function (data) {

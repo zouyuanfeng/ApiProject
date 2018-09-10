@@ -180,11 +180,11 @@
   }
 
   function toPage(id) {
-    location.href = "/update/" + id;
+    location.href = "update/" + id;
   }
 
   function toApi(group, method) {
-    location.href = "/api/" + group + "/" + method;
+    location.href = "api/" + group + "/" + method;
   }
 
   //    function getUrlParam(name) {
@@ -227,7 +227,7 @@
 
       $.ajax({
         type: "POST",
-        url: "/deleteMuti",
+        url: "deleteMuti",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(ids),
         success: function (data) {
